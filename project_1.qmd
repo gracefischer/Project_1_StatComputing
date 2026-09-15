@@ -1,0 +1,46 @@
+---
+title: "Project 1"
+author: "Grace Fischer"
+date: "09/15/26"
+format: html
+---
+```{r}
+#| label: access-data
+#| warning: false
+
+## Install the tidyverse package
+if (!require("tidyverse", quietly = TRUE)) {
+    install.packages("tidyverse")
+}
+
+library("tidyverse")
+
+## Install the tidytuesdayR package
+if (!require("tidytuesdayR", quietly = TRUE)) {
+    install.packages("tidytuesdayR")
+}
+
+library("here")
+library("tidyverse")
+
+# tests if a directory named "data" exists locally
+if (!dir.exists(here("data"))) {
+    dir.create(here("data"))
+}
+
+# saves data only once (not each time you knit a R Markdown)
+if (!file.exists(here("data", "chocolate.RDS"))) {
+    url_csv <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2022/2022-01-18/chocolate.csv"
+    chocolate <- readr::read_csv(url_csv)
+
+    # save the file to RDS objects
+    saveRDS(chocolate, file = here("data", "chocolate.RDS"))
+}
+
+# Read dataset locally from computing enviorment
+chocolate <- readRDS(here("data", "chocolate.RDS"))
+as_tibble(chocolate)
+
+# Glimpse at the data 
+glimpse(chocolate)
+```
