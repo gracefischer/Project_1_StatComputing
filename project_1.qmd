@@ -44,3 +44,42 @@ as_tibble(chocolate)
 # Glimpse at the data 
 glimpse(chocolate)
 ```
+
+
+```{r}
+#| label: Part 1: Explore Data - Histogram
+#| warning: false
+
+## Histogram where bin num = 10 
+hist(chocolate$rating, main = "Overall distribution of rating scores (bin = 10)", xlab =  "Rating", ylab = "Frequency", breaks = 10)
+
+## Histogram where bin num = 15 
+hist(chocolate$rating, main = "Overall distribution of rating scores (bin = 15)", xlab =  "Rating", ylab = "Frequency", breaks = 15)
+
+## Histogram where bin num = 20 (breaks this way because r typically favors pretty numbers over round, length out is because it produces n-1 bins)
+hist(chocolate$rating, main = "Overall distribution of rating scores (bin = 20)", xlab =  "Rating", ylab = "Frequency", breaks = seq(min(chocolate$rating), max(chocolate$rating), length.out = 21))
+
+## Histogram where bin num = 25
+hist(chocolate$rating, main = "Overall distribution of rating scores (bin = 25)", xlab =  "Rating", ylab = "Frequency", breaks = 25)
+```
+
+The change that occurs when selecting a different number of bins is that the number of bars on the histogram change, when breaks = 10, theres 10 bars on the histogram across the x axis. When breaks = 15, theres 15 bars on the histogram across the x axis and so on. In my opinon, the one that looks the best is when breaks = 10. Typically, a histogram has all bars touching, and when we increase to bin = 15 , the space between and roughly 3.3 drops to 0 or so small we cannot see it visually. The same problem occurs in bin = 20. When we make it to bin = 25, there is so much gapping between the bins, the histogram takes the shape of a bar chart, and loses its shape completely. Additionally, throughout all bin varations, the negative skew (or left skew) remains clear, so we are able to draw relatively the same conclusions like mean < median < mode. Though bin = 15 had advanatges like providing more specific data, I think that what it adds does not outweigh the benefits of bin = 10. 
+
+```{r}
+#| label: Part 1: Explore Data - Beans
+#| warning: false
+
+## Arranging Data by the country of origin 
+arrange(chocolate, country_of_bean_origin)
+
+## Grouping by the country of origin
+by_country <- group_by(chocolate, country_of_bean_origin)
+
+## Summarizing data based on country, and the sum of the count of ratings. 
+country_and_review <- summarize(by_country, 
+num_reviews = sum(!is.na(rating))
+)
+print(country_and_review, n =Inf)
+```
+
+The amount of reviews that come from each country of origin are shown in the output from the code above. 
