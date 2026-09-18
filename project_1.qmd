@@ -4,6 +4,8 @@ author: "Grace Fischer"
 date: "09/15/26"
 format: html
 ---
+
+# Setting Up
 ```{r}
 #| label: access-data
 #| warning: false
@@ -46,7 +48,7 @@ glimpse(chocolate)
 ```
 
 
-Part 1
+# Part 1: Explore Data
 ```{r}
 #| label: Part 1: 1. Explore Data - Histogram
 #| warning: false
@@ -253,4 +255,94 @@ Sources I used to help me answer this question: https://stackoverflow.com/questi
 
 I was was not familiar with this, so it was fun to learn about this way of using facet-wraps. I remember a different way of doing it from undergrad (I was a Statostics major, compsci minor), so this was actually quite interesting. 
 
+# Part 2: Join two datasets together
+```{r}
+#| label: Part 2: Joining Data - 1. Join continents
+#| warning: false
 
+## Installing gapminder 
+install.packages("gapminder")
+library("gapminder")
+
+## Setting up continent before joining 
+ country_by_cont <- gapminder::gapminder_unfiltered %>%
+  distinct(country, continent)
+
+## Left join to keep row in chocolate and add continent
+chocolate <- chocolate %>%
+  ## Making check for countries 
+  left_join(country_by_cont, by = c("country_of_bean_origin" = "country"))
+
+```
+
+```{r}
+#| label: Part 2: Joining Data - 2. Bean Origin with at least 10 reviews 
+#| warning: false
+
+chocolate <- chocolate %>%
+
+## Group by the country of origin 
+  group_by(country_of_bean_origin) %>%
+  
+## Filter out countries with less than 10 reviews 
+filter(sum(!is.na(rating)) >= 10)  %>%
+
+## ungrouping to avoid error 
+ungroup()
+```
+
+```{r}
+#| label: Part 2: Joining Data - 3. Removing "Blend"
+#| warning: false
+
+chocolate <- chocolate %>%
+
+  ## Filter out countries with Blend
+   filter(country_of_bean_origin != "Blend")
+
+```
+
+```{r} 
+#| label: Part 2: Joining Data - Naming NA countries
+#| warning: false
+
+## I waited to do this before graphs since we were removing countries with less than 10 reviews, and blend anyway! 
+
+## Checking to see when a continent is NA 
+  chocolate %>%
+  filter(is.na(continent)) %>%
+  distinct(country_of_bean_origin)
+
+## Fixing NA continents listed 
+chocolate <- chocolate %>%
+  mutate(
+    ## Using case when to prepare functions 
+    continent = case_when(
+      country_of_bean_origin %in% c("Sao Tome", "Congo") ~ "Africa",
+      country_of_bean_origin %in% c("Trinidad", "St. Lucia", "U.S.A.") ~ "Americas",
+      ## Need this for rows that already assigned
+      TRUE ~ continent
+    )
+  )
+
+## Run check again to make sure all countries have continents 
+  chocolate %>%
+  filter(is.na(continent)) %>%
+  distinct(country_of_bean_origin)
+
+```
+
+```{r}
+#| label: Part 2: Joining Data - 4. Creating Violin Plot
+#| warning: false
+
+## Using ggplot and aes, setting x and y respectively 
+ggplot(chocolate, aes(x = continent, y = rating)) + 
+  geom_violin() + 
+  labs(
+    x = "Continent", 
+    y = "Rating", 
+    title = "Ratings by Continent")
+
+
+```
