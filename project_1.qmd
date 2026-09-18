@@ -346,3 +346,137 @@ ggplot(chocolate, aes(x = continent, y = rating)) +
 
 
 ```
+
+# Part 3: Convert wide data into long data
+
+```{r}
+#| label: Part 3: Wide to Long - 1. New Columns 
+#| warning: false
+
+chocolate <- chocolate %>%
+
+## Accounting for NA's which would go undectected, mutate acts as boolean here and does the 0, 1's 
+  mutate(
+    beans        = replace_na(as.integer(str_detect(ingredients, "B")), 0),
+    sugar        = replace_na(as.integer(str_detect(ingredients, "S,|S$")), 0),
+    cocoa_butter = replace_na(as.integer(str_detect(ingredients, "C")), 0),
+    vanilla      = replace_na(as.integer(str_detect(ingredients, "V")), 0),
+    letchin      = replace_na(as.integer(str_detect(ingredients, "L")), 0),
+    salt         = replace_na(as.integer(str_detect(ingredients, "Sa")), 0)
+  )
+```
+
+```{r}
+#| label: Part 3: Wide to Long - 2. Memorable characteristics
+#| warning: false
+
+
+## Checking for ket words in most memorable characteritsics, here the muatate function acting as boolean, assign 0 is word not detected. 
+chocolate <- chocolate %>%
+  mutate(
+    char_cocoa  = as.integer(str_detect(most_memorable_characteristics, "cocoa")),
+    char_sweet  = as.integer(str_detect(most_memorable_characteristics, "sweet")),
+    char_nutty  = as.integer(str_detect(most_memorable_characteristics, "nutty")),
+    char_creamy = as.integer(str_detect(most_memorable_characteristics, "creamy")),
+    char_roasty = as.integer(str_detect(most_memorable_characteristics, "roasty")),
+    char_earthy = as.integer(str_detect(most_memorable_characteristics, "earthy"))
+  )
+```
+
+```{r}
+#| label: Part 3: Wide to Long - 3. Mean across review Date
+#| warning: false
+
+## Calculate means for columns 
+chocolate <- chocolate %>%
+  ## Group by review year 
+  group_by(review_date) %>%
+  ## Summarize the means
+  summarize(
+    beans        = mean(beans),
+    sugar        = mean(sugar),
+    cocoa_butter = mean(cocoa_butter),
+    vanilla      = mean(vanilla),
+    letchin      = mean(letchin),
+    salt         = mean(salt),
+    char_cocoa   = mean(char_cocoa),
+    char_sweet   = mean(char_sweet),
+    char_nutty   = mean(char_nutty),
+    char_creamy  = mean(char_creamy),
+    char_roasty  = mean(char_roasty),
+    char_earthy  = mean(char_earthy),
+  )
+
+## Check for specs: 16 rows 13 cols 
+chocolate
+
+```
+
+```{r}
+#| label: Part 3: Wide to Long - 4. wide to long 
+#| warning: false
+
+## Sources I used to help me included at end
+chocolate_long <- chocolate %>%
+  pivot_longer(
+    cols = beans:char_earthy,
+    names_to = "feature",
+    values_to = "mean_score"
+  )
+
+chocolate_long
+```
+
+Sources I used to help me complete this: https://stackoverflow.com/questions/72482406/how-to-use-pivot-longer-as-a-newbie 
+
+# Part 4: Data Visualization 
+#### Using chocolate_long from Part 3
+```{r}
+#| label: Part 4: Data Visualization - Creating the scatterplot 
+#| warning: false
+
+## Use ggplot with data and aes for x and y respecively 
+ggplot(chocolate_long, aes(x = review_date, y = mean_score)) +
+  ## Plot type 
+  geom_point() +
+  ## 2. non-linear line (mean points above by geom.point)
+  geom_smooth(method = "loess" ) +
+  ## 3. all plots shown in 1 figure, with individual scales for numbers depending on data "free_y" (source below)
+  facet_wrap(~ feature, scales = "free_y") +
+  labs(
+    ## 4. x and y axis labels 
+    x = "Review Year",
+    y = "Proportion of Reviews Mentioning Feature",
+    ## 1. Title, subtitile, caption
+    title = "Chocolate Ingreidents and Flavor Variations Through the Years", 
+    subtitle = "Since around 2006, there has been a decline notes such as vanilla, lecithin, and cream, \nwhereas earthy, roasty, and cocoa notes have risen in popularity.", 
+    caption = "Grace Fischer") +
+  theme_light()
+
+
+```
+
+Sources I used to help me complete this: 
+https://stackoverflow.com/questions/18046051/setting-individual-axis-limits-with-facet-wrap-and-scales-free-in-ggplot2
+
+# Part 5: Make the worst plot you can
+```{r}
+#| label: Part 5: Make the worst plot you can - 1. 
+#| warning: false
+
+```
+
+```{r}
+#| label: Part 4: Data Visualization - 3. 
+#| warning: false
+
+```
+
+```{r}
+#| label: Part 4: Data Visualization - 4. 
+#| warning: false
+
+```
+
+Sources I used to help me complete this: 
+https://stackoverflow.com/questions/18046051/setting-individual-axis-limits-with-facet-wrap-and-scales-free-in-ggplot2
