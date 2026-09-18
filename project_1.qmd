@@ -46,6 +46,7 @@ glimpse(chocolate)
 ```
 
 
+Part 1
 ```{r}
 #| label: Part 1: 1. Explore Data - Histogram
 #| warning: false
@@ -186,4 +187,70 @@ print(head(best_ratings_10, 3))
 ```
 
 Now, filtering for 10 reviews or more, the countries of bean origin with the best average ratings are Solomon Islands with 3.45 rating and 10 reviews, Congo with 3.32 rating and 11 reviews, and Cuba with 3.29 rating and 12 reviews. 
+
+```{r}
+#| label: Part 1: Explore Data - 7. Percent Chocolate and Ratings 
+#| warning: false
+
+## Identify the countries of bean origin with at least 50 reviews.
+new_choco <- chocolate %>%
+
+## Filter out countries with less than 50 reviews for country of origin 
+  group_by(country_of_bean_origin) %>%
+  filter(sum(!is.na(rating)) >= 50)
+  
+print(new_choco, n=Inf)
+
+## Using mutate function to add a new column 
+new_choco <- new_choco %>%
+  mutate(
+
+    ## Converting columns to numbers using substr and nchar - 1 for indexing str 
+    cocoa_percent = as.numeric(substr(cocoa_percent, 1, nchar(cocoa_percent) - 1)),
+
+    ## Using case when to break up mutate var 
+    percent_groups = case_when(
+      cocoa_percent < 60 ~ "<60%",
+      cocoa_percent >= 60 & cocoa_percent < 70 ~ ">= 60% to <70%",
+      cocoa_percent >= 70 & cocoa_percent < 90 ~ ">= 70% to <90%",
+      cocoa_percent >= 90 ~ ">=90%"
+    )
+  )
+
+## re-order factor levels (just in case and for practice).
+new_choco <- new_choco %>%
+
+  ## ungrouping to avoid error 
+  ungroup()%>%
+
+  ## implementing mutate and fct_relevel
+  mutate(
+    percent_groups = fct_relevel(percent_groups, "<60%", ">= 60% to <70%", ">= 70% to <90%", ">=90%")
+  )
+
+
+## Use ggplot to create boxplots, use aes to set x and y 
+ggplot(new_choco, aes(x=percent_groups, y = rating)) + 
+  ## Using geom.boxplot
+  geom_boxplot() +
+
+    ## this gets side by side plots (see source at end)
+    facet_wrap( ~ country_of_bean_origin) + 
+
+    ## (labels for graph)
+    labs( x = "Percentage Groups", 
+    y = "Rating",
+    title = "Ratings by Chocolate Percentage Groups, Faceted by Country")
+
+
+```
+
+On average, which category of chocolate percentage is most highly rated? Do these countries mostly agree or are there disagreements?
+
+On average, I think that ">= 60% to <70%" and the ">= 70% to <90%" groups are the groups that were the most highly rated, since both groups consistently have a high median category. It is hard to say because favor one group over the other, bur both are ranked on the higher end a majority of the time, one is not consistently higher than the other, and oftentimes they are tied. Countries tend to agree that the >=90% group rates consistently low.
+
+Sources I used to help me answer this question: https://stackoverflow.com/questions/49458591/use-facet-wrap-in-r
+
+I was was not familiar with this, so it was fun to learn about this way of using facet-wraps. I remember a different way of doing it from undergrad (I was a Statostics major, compsci minor), so this was actually quite interesting. 
+
 
