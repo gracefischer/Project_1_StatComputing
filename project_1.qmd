@@ -461,10 +461,58 @@ https://stackoverflow.com/questions/18046051/setting-individual-axis-limits-with
 
 # Part 5: Make the worst plot you can
 ```{r}
-#| label: Part 5: Make the worst plot you can - 1. 
+#| label: Part 5: Make the worst plot you can - 1. Making the Plot 
 #| warning: false
 
+## For this part, I will be using ggplot chocolate with all of the data from the data set, using aes to set x and y respectively
+
+## 1. For my first modification I am going to choose the color of the data, based on which country the bean belong to, it will be colored accordingly.
+
+## 2. My second modification is sizing by rating. This way, the scale of the dot will be based upon the rating value.
+ggplot(new_choco, aes(x = country_of_bean_origin, y = rating, color = country_of_bean_origin, size = rating)) + 
+
+  ## 3. The third modification is using geom_jitter() which offsets points so they are not overlapping (in this case since countries are the same, there would be some overlapping)
+  ## 4. My fourth modification is using shape = 0 which makes the shape of the points a square that is hollow
+  geom_jitter(shape = 0) + 
+    ## 5. My fifth modification is fitting an lm line which is not necessarily good since country of origin is a categorical and not numerical variable
+    ## 6. I also chose to make the linewidth 3, this way it is abnormally thick and draws attention away from data points. 
+  geom_smooth(method = "lm, linewidth = 7) +
+
+    # 7. I broke up the graphs by the percent_group scales and now 
+    facet_wrap(~percent_groups, scales = "free" ) +
+      ## 8. I added labels to the graphs and made them bad just to make the worst graph 
+    labs(
+    x = "country",
+    y = "increasing nums rating",
+    title = "Chocolate",
+    subtitle = "wow, chocolate graph",
+    caption = "Grace"
+  ) + 
+    ## 9. I made the plot background a different color 
+    theme(
+      plot.background = element_rect(fill = "gold"),
+      panel.background = element_rect(fill = "chartreuse")
+    )
+
+
+
+
 ```
+
+Sources I used to help me complete this: https://ggplot2.tidyverse.org/reference/geom_jitter.html
+
+1. Creating link between color to country_of_bean_origin here is not good because with so many countries it is hard to memorize, however, this could be good to use in in a visualization with a low number of categories, to keep the number of colors low and easy to remember, making it distinct. 
+2. Sizing by rating in this graph is slightly redundant since rating is shown on y axis, however, in a good visualization using a different variable would make it more informative and useful. 
+3. Using geom_jitter allows overlapping points to not be on top of one another so they can be seen better, but here there is a heavy seperation because of the data so it can misrepresent the data, making it look more spread out than it really is.  In a good visualization, when used carefully, it can be useful. 
+4. Changing the shape of the points can be useful in a good visualization, like using high contrast shapes that are easy to read, even changing them to represent different categories. Here to make a bad graph I chose shapes that were intentionally difficult to read and would overlap because of aforemenitoned modifications, to prove my point. 
+5.
+6.
+7.
+8.
+9.
+
+
+
 
 ```{r}
 #| label: Part 4: Data Visualization - 3. 
