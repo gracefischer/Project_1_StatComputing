@@ -476,9 +476,10 @@ ggplot(new_choco, aes(x = country_of_bean_origin, y = rating, color = country_of
   geom_jitter(shape = 0) + 
     ## 5. My fifth modification is fitting an lm line which is not necessarily good since country of origin is a categorical and not numerical variable
     ## 6. I also chose to make the linewidth 3, this way it is abnormally thick and draws attention away from data points. 
-  geom_smooth(method = "lm, linewidth = 7) +
+  geom_smooth(aes(group = 1), method = "lm", linewidth = 3) +
 
-    # 7. I broke up the graphs by the percent_group scales and now 
+    ##7. I broke up the graphs by the percent_group scales and now 
+    
     facet_wrap(~percent_groups, scales = "free" ) +
       ## 8. I added labels to the graphs and made them bad just to make the worst graph 
     labs(
@@ -495,8 +496,6 @@ ggplot(new_choco, aes(x = country_of_bean_origin, y = rating, color = country_of
     )
 
 
-
-
 ```
 
 Sources I used to help me complete this: https://ggplot2.tidyverse.org/reference/geom_jitter.html
@@ -505,26 +504,80 @@ Sources I used to help me complete this: https://ggplot2.tidyverse.org/reference
 2. Sizing by rating in this graph is slightly redundant since rating is shown on y axis, however, in a good visualization using a different variable would make it more informative and useful. 
 3. Using geom_jitter allows overlapping points to not be on top of one another so they can be seen better, but here there is a heavy seperation because of the data so it can misrepresent the data, making it look more spread out than it really is.  In a good visualization, when used carefully, it can be useful. 
 4. Changing the shape of the points can be useful in a good visualization, like using high contrast shapes that are easy to read, even changing them to represent different categories. Here to make a bad graph I chose shapes that were intentionally difficult to read and would overlap because of aforemenitoned modifications, to prove my point. 
-5.
-6.
-7.
-8.
-9.
+5. Fitting the lm line in this case makes the slope meaningless since it is categorical. In a good visualization, a trendline would fit the data and use loess or whatever shape would meet it. I had to add the aes line to make it show up. 
+6. Making the line as thick as it is draws attention away from the data points where the line is suppose to enhance the data, not be a focal point. In a good graph, it would be subtle and help guide the viewer across the data, not distract. 
+7. Faceting percent groups an using scale = free lets the axis range be independent on each of the panels. This makes it easy to misjudge, since they are all measuring the same thing. To use this in a good visualization, all scales would be the same or scale = free would be used when the range is unrelated to the others. 
+8. This is not much of a modification but i felt it should be included. The use of labels, titiles, subtitiles, and captions should be meaningful in a good visualization so the viewer can figure out what is going on. 
+9. Using panel and plot colors that are clashing is an eye-sore and distracting. In a good visualization, we can use differeny colors to make it interesting, but still neutral and low contrast so that the data remains the focal point, and easy to read. 
 
 
-
-
-```{r}
-#| label: Part 4: Data Visualization - 3. 
-#| warning: false
-
-```
+# Part 6: Make my plot a better plot!
 
 ```{r}
-#| label: Part 4: Data Visualization - 4. 
+#| label: Part 6: Make my plot a better plot!
 #| warning: false
 
+library("tidyverse")
+chocolate <- readRDS(here("data", "chocolate.RDS"))
+as_tibble(chocolate)
+
+## Original plot
+chocolate %>%
+    ggplot(aes(
+        x = as.factor(review_date),
+        y = rating,
+        fill = review_date
+    )) +
+    geom_violin()
+
+## Improved Plot
+chocolate %>%
+    ggplot(aes(
+        x = as.factor(review_date),
+        y = rating,
+    )) +
+      ## 1. Using one color, the color distinction does not add anything, as year is already expressed on x axis, it is just redunant.
+      ## 2. alpha to color so its not as opaque 
+    geom_violin(fill = "lightblue", color = "black", alpha = 0.7) +
+    ## 3. Added stat summary to show where Q1, median and Q3 are. I added source below. 
+    stat_summary(
+      fun.min = function(x) quantile(x, 0.25),
+      fun.max = function(x) quantile(x, 0.75),
+      fun = median,
+      geom = "pointrange"
+      ) + 
+        ## 4. Added this since points go 1-4, helps with white space 
+        coord_cartesian(ylim = c(1, 4)) +
+      ## 5. Added labs to make graph more specific 
+    labs(
+    x = "Year of Review",
+    y = "Rating",
+    title = "Chocolate Bar Ratings by Year",
+    subtitle = "Rating distributions have remained fairly constant, with a slight upward\nshift as time goes on"
+    ) + 
+
+    ## 6. Added a theme for consistensy and ease of reading. 
+    ## 7. Added base font 
+    theme_minimal(base_family = "Georgia") +
+    ## 8. Adjusted fonts, angle, etc for clear reading, source below 
+    theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "darkgray", size = 10),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+    )
 ```
 
 Sources I used to help me complete this: 
-https://stackoverflow.com/questions/18046051/setting-individual-axis-limits-with-facet-wrap-and-scales-free-in-ggplot2
+https://stackoverflow.com/questions/41077199/how-to-use-r-ggplot-stat-summary-to-plot-median-and-quartiles
+
+https://stackoverflow.com/questions/1330989/rotating-and-spacing-axis-labels-in-ggplot2 
+
+1. I removed the fill = review date. In the original plot it was displaying a variable that was already being shown on the plot. It displaying an unnecessary gradient that did not provide any additional information to the viewer, so instead I made it a single color instead of the gradient with a key. 
+2. I added alpha to the fill. After doing teh fill I thought the colors I was trying all came out too opaque and heavy. This adds softness and an element of transparency to the graph, overall it makes it look more polished. 
+3. I added stat_summary. Here, it displays Q1, Q2 (median), and Q3. Though the violin shows the overall distribution shape, it has no summary or specific statistics. I felt that this gave the viewer the exact IQR and median qithout the entire boxplot making it look to busy or heavy.
+4. I used coord_cartesian to do y-axis range. It only goes from 1-4, so this removes any uncessary white space. Though there was not much to begin with, incase there would be after any edits this got tid of that and also keeps violin shapes and quartile calculations accurate.
+5. I added labels to the graph to help the viewer better understand what they are looking at. The original plot had no labels at all, and even left the x label as what it is in the code. Adding this helps the viewer understand what they are looking at. 
+6. I added the minimal theme. The default theme has a heavy visual weight compared to the violin graphs, this filters out some of the background additions it had before. 
+7. I changed the font to Georgia. The font before felt plain and changing to a serif font felt more finished and clean to me 
+8. I customized the bold, color, and angle of the labels. Thsi way the viewer can distinguish whagt to read first. Additionally, angling the years prevents them from overlapping one another and potentionally being unreadable at any point.
+
