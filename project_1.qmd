@@ -3,8 +3,8 @@ title: "Project 1"
 author: "Grace Fischer"
 date: "09/20/26"
 format: 
-html:
-  code-overflow: wrap
+  html:
+    code-overflow: wrap
 ---
 
 # Setting Up
