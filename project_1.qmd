@@ -50,7 +50,7 @@ glimpse(chocolate)
 
 # Part 1: Explore Data
 ```{r}
-#| label: Part 1: 1. Explore Data - Histogram
+#| label: Part 1 - 1. Explore Data - Histogram
 #| warning: false
 
 ## Histogram where bin num = 10 
@@ -69,7 +69,7 @@ hist(chocolate$rating, main = "Overall distribution of rating scores (bin = 25)"
 The change that occurs when selecting a different number of bins is that the number of bars on the histogram change, when breaks = 10, theres 10 bars on the histogram across the x axis. When breaks = 15, theres 15 bars on the histogram across the x axis and so on. In my opinon, the one that looks the best is when breaks = 10. Typically, a histogram has all bars touching, and when we increase to bin = 15 , the space between and roughly 3.3 drops to 0 or so small we cannot see it visually. The same problem occurs in bin = 20. When we make it to bin = 25, there is so much gapping between the bins, the histogram takes the shape of a bar chart, and loses its shape completely. Additionally, throughout all bin varations, the negative skew (or left skew) remains clear, so we are able to draw relatively the same conclusions like mean < median < mode. Though bin = 15 had advanatges like providing more specific data, I think that what it adds does not outweigh the benefits of bin = 10. 
 
 ```{r}
-#| label: Part 1: 2. Explore Data - Beans By Country 
+#| label: Part 1 - 2. Explore Data - Beans By Country 
 #| warning: false
 
 ## Arranging Data by the country of origin 
@@ -88,7 +88,7 @@ print(country_and_review, n =Inf)
 The amount of reviews that come from each country of origin are shown in the output from the code above. 
 
 ```{r}
-#| label: Part 1: Explore Data - 3. Ecuador
+#| label: Part 1 - Explore Data - 3. Ecuador
 #| warning: false
 
 ## Filtering data for Ecuador 
@@ -113,7 +113,7 @@ ecuador_summary
 
 
 ```{r}
-#| label: Part 1: Explore Data - 4. Location with best chocolate 
+#| label: Part 1 - Explore Data - 4. Location with best chocolate 
 #| warning: false
 
 ## Find location with Best Chocolate
@@ -137,7 +137,7 @@ print(best_location, n  = Inf)
 The company location with the best average ratings with beans from Ecuador is Australia. 
 
 ```{r}
-#| label: Part 1: Explore Data - 5. Best across all origin 
+#| label: Part 1 - Explore Data - 5. Best across all origin 
 #| warning: false
 
 ## 
@@ -163,7 +163,7 @@ The countries of bean origin with the best average ratings are
 Tobago with  3.62, China with 3.5, and Sao Tome & Principe with 3.5.
 
 ```{r}
-#| label: Part 1: Explore Data - 6. remove w less than 10 reviews
+#| label: Part 1 - Explore Data - 6. remove w less than 10 reviews
 #| warning: false
 
 ## Find countries of origin with best average ratings
@@ -191,7 +191,7 @@ print(head(best_ratings_10, 3))
 Now, filtering for 10 reviews or more, the countries of bean origin with the best average ratings are Solomon Islands with 3.45 rating and 10 reviews, Congo with 3.32 rating and 11 reviews, and Cuba with 3.29 rating and 12 reviews. 
 
 ```{r}
-#| label: Part 1: Explore Data - 7. Percent Chocolate and Ratings 
+#| label: Part 1 - Explore Data - 7. Percent Chocolate and Ratings 
 #| warning: false
 
 ## Identify the countries of bean origin with at least 50 reviews.
@@ -257,7 +257,7 @@ I was was not familiar with this, so it was fun to learn about this way of using
 
 # Part 2: Join two datasets together
 ```{r}
-#| label: Part 2: Joining Data - 1. Join continents
+#| label: Part 2 - Joining Data - 1. Join continents
 #| warning: false
 
 ## Installing gapminder 
@@ -276,7 +276,7 @@ chocolate <- chocolate %>%
 ```
 
 ```{r}
-#| label: Part 2: Joining Data - 2. Bean Origin with at least 10 reviews 
+#| label: Part 2 - Joining Data - 2. Bean Origin with at least 10 reviews 
 #| warning: false
 
 chocolate <- chocolate %>%
@@ -292,7 +292,7 @@ ungroup()
 ```
 
 ```{r}
-#| label: Part 2: Joining Data - 3. Removing "Blend"
+#| label: Part 2 - Joining Data - 3. Removing "Blend"
 #| warning: false
 
 chocolate <- chocolate %>%
@@ -303,7 +303,7 @@ chocolate <- chocolate %>%
 ```
 
 ```{r} 
-#| label: Part 2: Joining Data - Naming NA countries
+#| label: Part 2 - Joining Data - Naming NA countries
 #| warning: false
 
 ## I waited to do this before graphs since we were removing countries with less than 10 reviews, and blend anyway! 
@@ -333,7 +333,7 @@ chocolate <- chocolate %>%
 ```
 
 ```{r}
-#| label: Part 2: Joining Data - 4. Creating Violin Plot
+#| label: Part 2 - Joining Data - 4. Creating Violin Plot
 #| warning: false
 
 ## Using ggplot and aes, setting x and y respectively 
@@ -350,7 +350,7 @@ ggplot(chocolate, aes(x = continent, y = rating)) +
 # Part 3: Convert wide data into long data
 
 ```{r}
-#| label: Part 3: Wide to Long - 1. New Columns 
+#| label: Part 3 - Wide to Long - 1. New Columns 
 #| warning: false
 
 chocolate <- chocolate %>%
@@ -367,7 +367,7 @@ chocolate <- chocolate %>%
 ```
 
 ```{r}
-#| label: Part 3: Wide to Long - 2. Memorable characteristics
+#| label: Part 3 - Wide to Long - 2. Memorable characteristics
 #| warning: false
 
 
@@ -384,7 +384,7 @@ chocolate <- chocolate %>%
 ```
 
 ```{r}
-#| label: Part 3: Wide to Long - 3. Mean across review Date
+#| label: Part 3 - Wide to Long - 3. Mean across review Date
 #| warning: false
 
 ## Calculate means for columns 
@@ -413,7 +413,7 @@ chocolate
 ```
 
 ```{r}
-#| label: Part 3: Wide to Long - 4. wide to long 
+#| label: Part 3 - Wide to Long - 4. wide to long 
 #| warning: false
 
 ## Sources I used to help me included at end
@@ -432,7 +432,7 @@ Sources I used to help me complete this: https://stackoverflow.com/questions/724
 # Part 4: Data Visualization 
 #### Using chocolate_long from Part 3
 ```{r}
-#| label: Part 4: Data Visualization - Creating the scatterplot 
+#| label: Part 4 - Data Visualization - Creating the scatterplot 
 #| warning: false
 
 ## Use ggplot with data and aes for x and y respecively 
@@ -461,7 +461,7 @@ https://stackoverflow.com/questions/18046051/setting-individual-axis-limits-with
 
 # Part 5: Make the worst plot you can
 ```{r}
-#| label: Part 5: Make the worst plot you can - 1. Making the Plot 
+#| label: Part 5 - Make the worst plot you can - 1. Making the Plot 
 #| warning: false
 
 ## For this part, I will be using ggplot chocolate with all of the data from the data set, using aes to set x and y respectively
@@ -513,7 +513,7 @@ Sources I used to help me complete this: https://ggplot2.tidyverse.org/reference
 
 # Part 6: Make my plot a better plot!
 ```{r}
-#| label: Part 6: Make my plot a better plot!
+#| label: Part 6 - Make my plot a better plot!
 #| warning: false
 
 library("tidyverse")
