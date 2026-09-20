@@ -1,7 +1,7 @@
 ---
 title: "Project 1"
 author: "Grace Fischer"
-date: "09/15/26"
+date: "09/20/26"
 format: html
 ---
 
@@ -512,7 +512,6 @@ Sources I used to help me complete this: https://ggplot2.tidyverse.org/reference
 
 
 # Part 6: Make my plot a better plot!
-
 ```{r}
 #| label: Part 6: Make my plot a better plot!
 #| warning: false
