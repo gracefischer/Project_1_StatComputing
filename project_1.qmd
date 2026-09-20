@@ -261,7 +261,7 @@ I was was not familiar with this, so it was fun to learn about this way of using
 #| warning: false
 
 ## Installing gapminder 
-install.packages("gapminder")
+## install.packages("gapminder") already installed 
 library("gapminder")
 
 ## Setting up continent before joining 
