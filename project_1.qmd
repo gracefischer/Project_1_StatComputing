@@ -201,7 +201,7 @@ new_choco <- chocolate %>%
   group_by(country_of_bean_origin) %>%
   filter(sum(!is.na(rating)) >= 50)
   
-print(new_choco, n=Inf)
+print(new_choco)
 
 ## Using mutate function to add a new column 
 new_choco <- new_choco %>%
